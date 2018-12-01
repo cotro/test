@@ -1,0 +1,38 @@
+version: '3'
+services:
+  apache:
+      build: ./docker/php
+      volumes:
+      - "./:/var/www/html"
+      - "./docker/apache/apache.conf:/etc/apache2/sites-available/000-default.conf"
+      links:
+      - mysql
+      ports:
+      - "80:80"
+      privileged: true
+
+  mysql:
+      image: mysql:5.7
+      volumes:
+      - "./datadump/:/docker-entrypoint-initdb.d"
+      container_name: mysql
+      environment:
+          MYSQL_ROOT_PASSWORD: passroot
+          MYSQL_DATABASE: reservation_salles
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links: 
+        - mysql:mysql
+    ports:
+        - 8080:80
+    environment:
+        PMA_HOST: mysql
+
+  composer:
+      restart: 'no'
+      image: composer:latest
+      command: install
+      volumes:
+        - "./:/app"
+

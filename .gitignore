@@ -1,0 +1,6 @@
+/vendor
+/.idea/*
+/data
+\.idea/
+
+\.DS_Store
